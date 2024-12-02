@@ -1,0 +1,71 @@
+```{r}
+lambda_A <- 5
+lambda_S <- 6
+operating_hours <- 12
+simulation_time <- operating_hours * 60 
+
+arrival_times <- numeric()
+current_time <- 0
+
+while (current_time < simulation_time) {
+  inter_arrival_time <- rexp(1, rate = lambda_A / 60) 
+  current_time <- current_time + inter_arrival_time
+  if (current_time < simulation_time) {
+    arrival_times <- c(arrival_times, current_time)
+  }
+}
+
+service_times <- rexp(length(arrival_times), rate = lambda_S / 60)
+
+service_end_time <- 0
+waiting_times <- numeric()
+downtime <- numeric()
+downtime_times <- numeric()
+queue_lengths <- numeric()
+queue <- numeric()
+
+for (i in seq_along(arrival_times)) {
+  if (arrival_times[i] < service_end_time) {
+    waiting_time <- service_end_time - arrival_times[i]
+  } else {
+    waiting_time <- 0
+    downtime <- c(downtime, arrival_times[i] - service_end_time)
+    downtime_times <- c(downtime_times, service_end_time)
+  }
+  
+  waiting_times <- c(waiting_times, waiting_time)
+  queue_lengths <- c(queue_lengths, length(queue))
+  
+  service_end_time <- max(service_end_time, arrival_times[i]) + service_times[i]
+}
+
+arrival_times_hours <- arrival_times / 60
+downtime_times_hours <- downtime_times / 60
+
+mean_waiting_time <- mean(waiting_times)
+mean_downtime <- mean(downtime)
+mean_queue_length <- mean(queue_lengths)
+
+summary_metrics <- data.frame(
+  Metric = c("Mean Waiting Time (minutes)", "Mean Downtime (minutes)", "Mean Queue Length"),
+  Value = c(mean(waiting_times), mean(downtime), mean(queue_lengths))
+)
+
+print(summary_metrics)
+
+plot(arrival_times_hours, waiting_times, type = "l", lwd = 2,
+     xlab = "Time (hours)", ylab = "Waiting Time (minutes)",
+     main = "Waiting Time Over Time")
+
+plot(arrival_times_hours, queue_lengths, type = "l", lwd = 2,
+     xlab = "Time (hours)", ylab = "Queue Length",
+     main = "Queue Length Over Time")
+
+if (length(downtime) > 0) {
+  plot(downtime_times_hours, downtime, type = "h", lwd = 2,
+       xlab = "Time (hours)", ylab = "Downtime (minutes)",
+       main = "Downtime Over Time")
+} 
+
+```
+
