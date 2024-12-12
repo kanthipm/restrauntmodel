@@ -81,11 +81,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>time_intervals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">120</span>, <span class="dv">300</span>, <span class="dv">420</span>, <span class="dv">720</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>arrival_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">12</span>, <span class="dv">7</span>, <span class="dv">17</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>service_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>arrival_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">13</span>, <span class="dv">8</span>, <span class="dv">17</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>service_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n_tables <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#exponential rv</span></span>
@@ -142,24 +142,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>downtime <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>queue <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>() </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>busy_tables <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n_tables)</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(arrival_times)) {</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  next_arrival <span class="ot">&lt;-</span> arrival_times[i]</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">&amp;&amp;</span> current_time <span class="sc">&lt;</span> next_arrival) {</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    downtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> (next_arrival <span class="sc">-</span> current_time)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Downtime:"</span>, downtime))</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  current_time <span class="ot">&lt;-</span> next_arrival</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  busy_tables[busy_tables <span class="sc">&lt;=</span> current_time] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Seating customer at table"</span>, next_table, <span class="st">"at time:"</span>, current_time, <span class="st">"for service time:"</span>, service_time))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(arrival_times)) {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  next_arrival <span class="ot">&lt;-</span> arrival_times[i]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">&amp;&amp;</span> current_time <span class="sc">&lt;</span> next_arrival) {</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    downtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> (next_arrival <span class="sc">-</span> current_time)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Downtime:"</span>, downtime))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  current_time <span class="ot">&lt;-</span> next_arrival</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  busy_tables[busy_tables <span class="sc">&lt;=</span> current_time] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Seating customer at table"</span>, next_table, <span class="st">"at time:"</span>, current_time, <span class="st">"for service time:"</span>, service_time))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(waiting_times, <span class="dv">0</span>)</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    queue <span class="ot">&lt;-</span> <span class="fu">c</span>(queue, current_time)</span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  }</span>
@@ -175,130 +175,127 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Downtime: 5.46677992679179"
-[1] "Seating customer at table 1 at time: 5.46677992679179 for service time: 5.37756100699234"
-[1] "Seating customer at table 1 at time: 54.4000987429172 for service time: 29.2660112008524"
-[1] "Seating customer at table 2 at time: 54.7937682364136 for service time: 30.7478795706773"
-[1] "Seating customer at table 3 at time: 63.3726585656404 for service time: 0.0919825304299593"
-[1] "Seating customer at table 3 at time: 66.1722017358989 for service time: 22.1753093591871"
-[1] "Seating customer at table 4 at time: 68.7160082347691 for service time: 5.9994063526392"
-[1] "Seating customer at table 4 at time: 81.308476254344 for service time: 23.8400601400974"
-[1] "Seating customer at table 1 at time: 105.962088480592 for service time: 22.2985740742626"
-[1] "Seating customer at table 2 at time: 107.090285327286 for service time: 1.34751781821251"
-[1] "Seating customer at table 2 at time: 112.856074115261 for service time: 9.61337441578507"
-[1] "Seating customer at table 3 at time: 114.820001441985 for service time: 31.4090867804348"
-[1] "Seating customer at table 2 at time: 124.430463211611 for service time: 5.19892213866115"
-[1] "Seating customer at table 4 at time: 127.570716035552 for service time: 37.1384457481985"
-[1] "Seating customer at table 1 at time: 145.704004028812 for service time: 9.26439241540722"
-[1] "Seating customer at table 2 at time: 146.480456516147 for service time: 4.72071493044496"
-[1] "Seating customer at table 3 at time: 147.440054593608 for service time: 23.641988429332"
-[1] "Seating customer at table 1 at time: 158.953428450041 for service time: 1.19342743419111"
-[1] "Seating customer at table 1 at time: 161.692641363479 for service time: 8.06476882906"
-[1] "Seating customer at table 1 at time: 172.048752713017 for service time: 18.8587968043032"
-[1] "Seating customer at table 2 at time: 177.272581374273 for service time: 8.33161288872361"
-[1] "Seating customer at table 3 at time: 179.025729470886 for service time: 15.064368098134"
-[1] "Seating customer at table 2 at time: 186.392181166448 for service time: 3.77372776158154"
-[1] "Seating customer at table 1 at time: 194.47037873324 for service time: 17.5370774225824"
-[1] "Seating customer at table 2 at time: 194.618340446614 for service time: 3.80075641393609"
-[1] "Seating customer at table 2 at time: 206.003274796531 for service time: 19.5815641238334"
-[1] "Seating customer at table 1 at time: 217.931884448044 for service time: 6.4675165451105"
-[1] "Seating customer at table 1 at time: 226.945563680492 for service time: 26.4095510720255"
-[1] "Seating customer at table 2 at time: 235.291226478294 for service time: 6.36921296827495"
-[1] "Seating customer at table 3 at time: 238.027043840848 for service time: 32.1013459173923"
-[1] "Seating customer at table 2 at time: 244.326950116083 for service time: 2.91468232870102"
-[1] "Seating customer at table 4 at time: 244.704613108188 for service time: 36.0625863713036"
-[1] "Seating customer at table 2 at time: 247.535484270193 for service time: 0.601189089938998"
-[1] "Seating customer at table 1 at time: 256.522716754116 for service time: 26.0688109873774"
-[1] "Seating customer at table 2 at time: 263.184135183692 for service time: 3.99584489478282"
-[1] "Seating customer at table 2 at time: 280.117076891474 for service time: 35.0291248394136"
-[1] "Seating customer at table 3 at time: 282.413828121498 for service time: 35.2733666432982"
-[1] "Seating customer at table 1 at time: 291.810656846501 for service time: 16.860871565284"
-[1] "Seating customer at table 4 at time: 293.34436185658 for service time: 6.97505552321672"
-[1] "Seating customer at table 5 at time: 298.968559792265 for service time: 65.9564959969292"
-[1] "Seating customer at table 4 at time: 305.499740000814 for service time: 8.03412349894643"
-[1] "Seating customer at table 1 at time: 314.627911197022 for service time: 22.0140346876326"
-[1] "Seating customer at table 2 at time: 315.303798029199 for service time: 26.5784634455087"
-[1] "Seating customer at table 3 at time: 324.783766753972 for service time: 12.83805295825"
-[1] "Seating customer at table 4 at time: 331.916716843843 for service time: 3.91667430882966"
-[1] "Seating customer at table 1 at time: 353.064008904621 for service time: 9.135777130723"
-[1] "Seating customer at table 1 at time: 367.313758051023 for service time: 7.45500328019261"
-[1] "Seating customer at table 1 at time: 395.870981477201 for service time: 69.2718978192577"
-[1] "Seating customer at table 2 at time: 402.939325841144 for service time: 25.4805543824079"
-[1] "Seating customer at table 3 at time: 420.18743199762 for service time: 12.9778218081841"
-[1] "Seating customer at table 4 at time: 423.140133549459 for service time: 3.56350993060615"
-[1] "Seating customer at table 2 at time: 438.216171464883 for service time: 1.00992881320417"
-[1] "Seating customer at table 2 at time: 443.007349600084 for service time: 35.4408110068683"
-[1] "Seating customer at table 3 at time: 447.313199965283 for service time: 23.6190270547917"
-[1] "Seating customer at table 4 at time: 448.078496013768 for service time: 7.96626150794327"
-[1] "Seating customer at table 5 at time: 448.452198277228 for service time: 19.3127057244232"
-[1] "Seating customer at table 4 at time: 459.208707469516 for service time: 3.89562340825796"
-[1] "Seating customer at table 4 at time: 464.128407281823 for service time: 11.2875140118028"
-[1] "Seating customer at table 1 at time: 466.260690246709 for service time: 5.38930431380868"
-[1] "Seating customer at table 1 at time: 472.515795081854 for service time: 15.4668777505483"
-[1] "Seating customer at table 4 at time: 476.307335780002 for service time: 18.8607130505256"
-[1] "Seating customer at table 2 at time: 485.930289379321 for service time: 0.745689572766423"
-[1] "Seating customer at table 1 at time: 489.34853461571 for service time: 20.7693701450875"
-[1] "Seating customer at table 4 at time: 502.315093372017 for service time: 0.394677462056279"
-[1] "Seating customer at table 1 at time: 510.368669992313 for service time: 1.83645651116967"
-[1] "Seating customer at table 1 at time: 512.316003260203 for service time: 12.4616640503134"
-[1] "Seating customer at table 2 at time: 513.510660622269 for service time: 12.9893484743859"
-[1] "Seating customer at table 3 at time: 515.946185127832 for service time: 44.9674936582275"
-[1] "Seating customer at table 4 at time: 516.111972746439 for service time: 0.067513095214963"
-[1] "Seating customer at table 4 at time: 519.847062095068 for service time: 0.0524084475545744"
-[1] "Seating customer at table 4 at time: 523.05494167842 for service time: 20.3998099331906"
-[1] "Seating customer at table 1 at time: 525.53937277291 for service time: 6.48801778256893"
-[1] "Seating customer at table 2 at time: 530.846659750678 for service time: 5.64442333951592"
-[1] "Seating customer at table 1 at time: 532.338832765818 for service time: 0.618712988146853"
-[1] "Seating customer at table 1 at time: 533.944961316884 for service time: 6.20623606815934"
-[1] "Seating customer at table 5 at time: 535.190891339444 for service time: 17.7977161099365"
-[1] "Seating customer at table 1 at time: 541.353084524162 for service time: 15.3538267085876"
-[1] "Seating customer at table 2 at time: 542.842485783622 for service time: 17.1176180872877"
-[1] "Seating customer at table 4 at time: 545.294033903629 for service time: 17.0899244888401"
-[1] "Seating customer at table 5 at time: 554.554902417585 for service time: 6.27365352230554"
-[1] "Seating customer at table 1 at time: 560.033712470904 for service time: 0.823806777268531"
-[1] "Seating customer at table 1 at time: 562.594972229563 for service time: 6.82980639673769"
-[1] "Seating customer at table 5 at time: 564.87071915064 for service time: 52.390931230739"
-[1] "Seating customer at table 1 at time: 573.451637970284 for service time: 5.50537564605474"
-[1] "Seating customer at table 3 at time: 576.340717733838 for service time: 3.12316446751356"
-[1] "Seating customer at table 1 at time: 584.785396819934 for service time: 8.38610093962368"
-[1] "Seating customer at table 1 at time: 595.645005935803 for service time: 11.5582606620623"
-[1] "Seating customer at table 2 at time: 599.996687779203 for service time: 8.77775465851469"
-[1] "Seating customer at table 3 at time: 602.620494696312 for service time: 13.3473548474337"
-[1] "Seating customer at table 4 at time: 603.831300982274 for service time: 7.2674945499748"
-[1] "Seating customer at table 1 at time: 608.766339467838 for service time: 19.5799059613168"
-[1] "Seating customer at table 2 at time: 614.368043798022 for service time: 1.22311357905907"
-[1] "Seating customer at table 2 at time: 615.930577511899 for service time: 4.89580947160721"
-[1] "Seating customer at table 3 at time: 617.027438390069 for service time: 32.8841826379077"
-[1] "Seating customer at table 4 at time: 617.951534902677 for service time: 34.2225294987064"
-[1] "Seating customer at table 5 at time: 619.534558388405 for service time: 0.290080465490181"
-[1] "Seating customer at table 5 at time: 620.416676234454 for service time: 5.7071376722306"
-[1] "Seating customer at table 2 at time: 621.899727783166 for service time: 8.01730342023075"
-[1] "Seating customer at table 5 at time: 627.002130453475 for service time: 11.4027636269654"
-[1] "Seating customer at table 1 at time: 633.054720405489 for service time: 13.6533000319572"
-[1] "Seating customer at table 2 at time: 636.178882028908 for service time: 0.993181039061871"
-[1] "Seating customer at table 2 at time: 639.640561658889 for service time: 19.7148924587187"
-[1] "Seating customer at table 5 at time: 641.123321377672 for service time: 1.90680497680329"
-[1] "Seating customer at table 5 at time: 646.342547591776 for service time: 17.7433912520459"
-[1] "Seating customer at table 1 at time: 654.688290394843 for service time: 1.35638086728289"
-[1] "Seating customer at table 3 at time: 655.884465510026 for service time: 2.68950804438593"
-[1] "Seating customer at table 1 at time: 656.45875020884 for service time: 8.04612767882645"
-[1] "Seating customer at table 4 at time: 658.302696333267 for service time: 18.4419685219577"
-[1] "Seating customer at table 2 at time: 663.01930591464 for service time: 23.1458632339886"
-[1] "Seating customer at table 3 at time: 663.716852855869 for service time: 2.56286640410651"
-[1] "Seating customer at table 5 at time: 664.392011663876 for service time: 6.81471548974514"
-[1] "Seating customer at table 1 at time: 666.541638043709 for service time: 23.1998856057575"
-[1] "Seating customer at table 3 at time: 672.818795666099 for service time: 43.2329743553825"
-[1] "Seating customer at table 4 at time: 685.940718236379 for service time: 15.8349437485065"
-[1] "Seating customer at table 2 at time: 687.105066636577 for service time: 11.1691696189935"
-[1] "Seating customer at table 5 at time: 687.418235144578 for service time: 3.7854823484389"
-[1] "Seating customer at table 1 at time: 694.33145607356 for service time: 11.139534137639"
-[1] "Seating customer at table 2 at time: 700.589940981008 for service time: 3.10010959102997"
-[1] "Seating customer at table 2 at time: 704.318082011305 for service time: 6.46065386943519"
-[1] "Seating customer at table 1 at time: 706.227371566929 for service time: 0.904252393171191"
-[1] "Seating customer at table 4 at time: 706.342148249969 for service time: 1.54125247519959"
-[1] "Seating customer at table 1 at time: 713.94657521043 for service time: 31.1860818326251"
-[1] "Seating customer at table 2 at time: 715.265761041082 for service time: 24.8422919278195"
-[1] "Seating customer at table 4 at time: 715.487093995325 for service time: 2.46457220951901"</code></pre>
+<pre><code>[1] "Downtime: 1.27894140779972"
+[1] "Seating customer at table 1 at time: 1.27894140779972 for service time: 4.99000896932557"
+[1] "Seating customer at table 2 at time: 5.70574239827693 for service time: 11.5611630297139"
+[1] "Seating customer at table 1 at time: 8.05693720467389 for service time: 1.91609330708161"
+[1] "Seating customer at table 1 at time: 11.2417823821306 for service time: 5.32095698862204"
+[1] "Seating customer at table 1 at time: 18.744301898405 for service time: 53.0929295247327"
+[1] "Seating customer at table 2 at time: 20.5732424464077 for service time: 11.7978875425862"
+[1] "Seating customer at table 2 at time: 44.4506404269487 for service time: 7.34908571932465"
+[1] "Seating customer at table 3 at time: 45.3195859026164 for service time: 7.3618605080992"
+[1] "Seating customer at table 4 at time: 50.2004790958017 for service time: 25.8023301778797"
+[1] "Seating customer at table 2 at time: 51.8592739664018 for service time: 1.78684489935833"
+[1] "Seating customer at table 3 at time: 53.5713316127658 for service time: 46.5967430521674"
+[1] "Seating customer at table 2 at time: 61.790859606117 for service time: 28.5764023649011"
+[1] "Seating customer at table 5 at time: 63.8754290621728 for service time: 7.84265496768057"
+[1] "Seating customer at table 1 at time: 115.984115190804 for service time: 0.838023440546181"
+[1] "Seating customer at table 1 at time: 125.898896539584 for service time: 34.402396634911"
+[1] "Seating customer at table 2 at time: 130.54736324586 for service time: 21.9680363222815"
+[1] "Seating customer at table 3 at time: 140.936786709353 for service time: 7.54442345914747"
+[1] "Seating customer at table 1 at time: 170.994629943743 for service time: 32.0763921768742"
+[1] "Seating customer at table 2 at time: 171.394876465201 for service time: 2.43470409186557"
+[1] "Seating customer at table 2 at time: 177.964810947888 for service time: 23.3128203564427"
+[1] "Seating customer at table 3 at time: 179.128496171907 for service time: 27.0416701944981"
+[1] "Seating customer at table 4 at time: 179.939042469487 for service time: 2.11209669476375"
+[1] "Seating customer at table 5 at time: 181.587242474779 for service time: 24.4442041485075"
+[1] "Seating customer at table 4 at time: 184.754166975617 for service time: 17.9602010293507"
+[1] "Seating customer at table 1 at time: 203.842637334019 for service time: 14.4208915990995"
+[1] "Seating customer at table 3 at time: 211.781974802725 for service time: 2.86719965049997"
+[1] "Seating customer at table 1 at time: 218.689206582494 for service time: 11.3737117946452"
+[1] "Seating customer at table 3 at time: 223.543596784584 for service time: 7.52846368588507"
+[1] "Seating customer at table 4 at time: 225.308049763553 for service time: 34.6234531216046"
+[1] "Seating customer at table 5 at time: 227.265714327805 for service time: 7.91566439459352"
+[1] "Seating customer at table 1 at time: 233.039203262888 for service time: 4.59619092056528"
+[1] "Seating customer at table 2 at time: 234.424371812493 for service time: 0.875416717548305"
+[1] "Seating customer at table 2 at time: 235.415614508092 for service time: 1.61187532274381"
+[1] "Seating customer at table 3 at time: 235.585327888839 for service time: 3.43397245975211"
+[1] "Seating customer at table 2 at time: 237.581301857717 for service time: 35.5592003538927"
+[1] "Seating customer at table 1 at time: 248.41386354994 for service time: 2.06347739199293"
+[1] "Seating customer at table 1 at time: 250.529669984244 for service time: 29.2899150854412"
+[1] "Seating customer at table 3 at time: 261.118671717122 for service time: 5.54471567777009"
+[1] "Seating customer at table 4 at time: 261.737025459297 for service time: 1.20579633163288"
+[1] "Seating customer at table 5 at time: 262.879615779966 for service time: 2.20451671862975"
+[1] "Seating customer at table 4 at time: 264.918164410628 for service time: 2.40702966740006"
+[1] "Seating customer at table 2 at time: 274.065948813222 for service time: 0.57334143693932"
+[1] "Seating customer at table 1 at time: 287.133448426612 for service time: 32.5353821254989"
+[1] "Seating customer at table 2 at time: 294.154946208 for service time: 13.7606545065735"
+[1] "Seating customer at table 3 at time: 299.408999048173 for service time: 67.7519227340262"
+[1] "Seating customer at table 4 at time: 300.111036077142 for service time: 28.5272745216701"
+[1] "Seating customer at table 5 at time: 301.407097801566 for service time: 8.16001716535538"
+[1] "Seating customer at table 2 at time: 311.58942785114 for service time: 5.00886627472937"
+[1] "Seating customer at table 1 at time: 320.791304754093 for service time: 18.9060795440556"
+[1] "Seating customer at table 5 at time: 327.831550128758 for service time: 11.7727272066506"
+[1] "Seating customer at table 4 at time: 331.106707770377 for service time: 12.6865127071025"
+[1] "Seating customer at table 1 at time: 354.451780160889 for service time: 7.1275767730549"
+[1] "Seating customer at table 5 at time: 356.009285654873 for service time: 1.93290903232992"
+[1] "Seating customer at table 1 at time: 379.833447318524 for service time: 11.5940851851584"
+[1] "Seating customer at table 1 at time: 396.664821021259 for service time: 2.4748663432071"
+[1] "Seating customer at table 1 at time: 405.310073532164 for service time: 9.2954975925386"
+[1] "Seating customer at table 2 at time: 410.313849784434 for service time: 26.0807719098765"
+[1] "Seating customer at table 1 at time: 423.63551331684 for service time: 0.88959150376599"
+[1] "Seating customer at table 1 at time: 431.648712912574 for service time: 6.11083668190986"
+[1] "Seating customer at table 3 at time: 433.936981838197 for service time: 9.44566878208868"
+[1] "Seating customer at table 1 at time: 443.754278873093 for service time: 6.16353428922594"
+[1] "Seating customer at table 2 at time: 445.984204094857 for service time: 7.14249451712308"
+[1] "Seating customer at table 3 at time: 447.114304807037 for service time: 5.78041905071586"
+[1] "Seating customer at table 4 at time: 448.53724595625 for service time: 7.06320415208948"
+[1] "Seating customer at table 1 at time: 451.360365380533 for service time: 2.28182554710656"
+[1] "Seating customer at table 2 at time: 453.595709572546 for service time: 1.61187607795"
+[1] "Seating customer at table 1 at time: 455.955654527061 for service time: 0.0328358133051269"
+[1] "Seating customer at table 1 at time: 459.034913945943 for service time: 9.25055621923733"
+[1] "Seating customer at table 2 at time: 459.329420076683 for service time: 4.6517775096672"
+[1] "Seating customer at table 3 at time: 460.864676283672 for service time: 22.5849385889872"
+[1] "Seating customer at table 1 at time: 469.315477930941 for service time: 2.65867650043219"
+[1] "Seating customer at table 1 at time: 472.885418152437 for service time: 2.82383863348514"
+[1] "Seating customer at table 1 at time: 479.526883112267 for service time: 11.1716833240808"
+[1] "Seating customer at table 2 at time: 483.019201252609 for service time: 9.65629785279644"
+[1] "Seating customer at table 3 at time: 484.696431602351 for service time: 14.8276489592137"
+[1] "Seating customer at table 1 at time: 493.83444509469 for service time: 6.55286858323961"
+[1] "Seating customer at table 2 at time: 495.397085817531 for service time: 8.80801386157882"
+[1] "Seating customer at table 4 at time: 499.153884295374 for service time: 6.35277015157044"
+[1] "Seating customer at table 5 at time: 499.264166532084 for service time: 3.14251281423027"
+[1] "Seating customer at table 3 at time: 500.108601646498 for service time: 3.03093639202416"
+[1] "Seating customer at table 1 at time: 508.121277512982 for service time: 3.98288077209145"
+[1] "Seating customer at table 1 at time: 525.289622442797 for service time: 1.00819880608469"
+[1] "Seating customer at table 2 at time: 525.447993194684 for service time: 6.34244672488421"
+[1] "Seating customer at table 1 at time: 532.439939752221 for service time: 7.72982077631068"
+[1] "Seating customer at table 2 at time: 536.14492891822 for service time: 1.30489839071995"
+[1] "Seating customer at table 2 at time: 539.426844315603 for service time: 1.33092812728137"
+[1] "Seating customer at table 3 at time: 540.101362885907 for service time: 6.08273030724376"
+[1] "Seating customer at table 1 at time: 544.298044340685 for service time: 7.14246105360699"
+[1] "Seating customer at table 1 at time: 554.512018435635 for service time: 1.38875148724765"
+[1] "Seating customer at table 1 at time: 556.631492315792 for service time: 8.76914294394565"
+[1] "Seating customer at table 2 at time: 558.253388064913 for service time: 10.7366318903388"
+[1] "Seating customer at table 3 at time: 563.575991154648 for service time: 10.5517501566083"
+[1] "Seating customer at table 1 at time: 573.329695388675 for service time: 2.16839378233999"
+[1] "Seating customer at table 2 at time: 574.385886294767 for service time: 1.33105030748993"
+[1] "Seating customer at table 1 at time: 584.673814550042 for service time: 27.1577257464144"
+[1] "Seating customer at table 2 at time: 588.977360730059 for service time: 9.95265422346902"
+[1] "Seating customer at table 3 at time: 590.849325251766 for service time: 7.67972381485285"
+[1] "Seating customer at table 4 at time: 592.799118049443 for service time: 0.785282379947603"
+[1] "Seating customer at table 4 at time: 593.701772396453 for service time: 0.668709171004593"
+[1] "Seating customer at table 5 at time: 593.995604971424 for service time: 6.33270762395114"
+[1] "Seating customer at table 2 at time: 604.758997731842 for service time: 8.9941723454268"
+[1] "Seating customer at table 4 at time: 605.135852149688 for service time: 24.6175244624231"
+[1] "Seating customer at table 5 at time: 608.946346845478 for service time: 26.4617202232096"
+[1] "Seating customer at table 1 at time: 612.018696153536 for service time: 8.75247634343408"
+[1] "Seating customer at table 2 at time: 615.276328129694 for service time: 9.79992653819334"
+[1] "Seating customer at table 1 at time: 624.058593744412 for service time: 4.17881041299552"
+[1] "Seating customer at table 2 at time: 625.435805115849 for service time: 5.10650013573468"
+[1] "Seating customer at table 1 at time: 640.431802701205 for service time: 5.15621345490217"
+[1] "Seating customer at table 1 at time: 651.284320936538 for service time: 8.81122489417803"
+[1] "Seating customer at table 5 at time: 654.433019114658 for service time: 15.7164195061651"
+[1] "Seating customer at table 1 at time: 665.649100025184 for service time: 17.9505378372016"
+[1] "Seating customer at table 3 at time: 665.911567797884 for service time: 6.38695605564862"
+[1] "Seating customer at table 4 at time: 667.344660270028 for service time: 11.2020430989088"
+[1] "Seating customer at table 5 at time: 670.806034519337 for service time: 18.7390661231222"
+[1] "Seating customer at table 3 at time: 674.108187952079 for service time: 14.534786659384"
+[1] "Seating customer at table 4 at time: 681.191911180504 for service time: 12.7137394897164"
+[1] "Seating customer at table 1 at time: 684.364640135318 for service time: 38.5387048663056"
+[1] "Seating customer at table 3 at time: 691.171301370487 for service time: 0.820740358904004"
+[1] "Seating customer at table 3 at time: 695.991593138315 for service time: 12.2348552193017"
+[1] "Seating customer at table 3 at time: 709.18393899221 for service time: 26.6934985841129"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(queue_lengths, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Queue Length"</span>, </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Queue Length Over Time"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, </span>
@@ -315,13 +312,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Average Waiting Time: 16.10049 minutes</code></pre>
+<pre><code>Average Waiting Time Across All Customers: 3.022725 minutes</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, downtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Total Downtime: 5.46678 minutes</code></pre>
+<pre><code>Total Downtime: 1.278941 minutes</code></pre>
 </div>
 </div>
 

@@ -1,10 +1,10 @@
 ```{r}
 
-set.seed(123)
+set.seed(111)
 
 time_intervals <- c(0, 120, 300, 420, 720)
-arrival_rates <- c(7, 12, 7, 17)
-service_rates <- c(3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5)
+arrival_rates <- c(8, 13, 8, 17)
+service_rates <- c(4, 4, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6)
 n_tables <- 5
 
 #exponential rv
@@ -49,10 +49,9 @@ hist(sample_service_times, main = "Service Time Distribution", xlab = "Service T
 current_time <- 0
 downtime <- 0
 queue <- c()
-queue_lengths <- c() 
+queue_lengths <- c()
 busy_tables <- rep(0, n_tables)
 waiting_times <- c()
-
 
 for (i in seq_along(arrival_times)) {
   next_arrival <- arrival_times[i]
@@ -67,6 +66,7 @@ for (i in seq_along(arrival_times)) {
     service_time <- service_times[i]
     busy_tables[next_table] <- current_time + service_time
     print(paste("Seating customer at table", next_table, "at time:", current_time, "for service time:", service_time))
+    waiting_times <- c(waiting_times, 0)
   } else {
     queue <- c(queue, current_time)
   }
@@ -91,7 +91,7 @@ axis(1, at = seq(1, length(queue_lengths), by = length(queue_lengths) / 12),
 
 avg_wait_time <- if (length(waiting_times) > 0) mean(waiting_times) else 0
 
-cat("Average Waiting Time:", avg_wait_time, "minutes\n")
+cat("Average Waiting Time Across All Customers:", avg_wait_time, "minutes\n")
 cat("Total Downtime:", downtime, "minutes\n")
 
 ```
