@@ -4,29 +4,163 @@ output:
   pdf_document: default
   html_document: default
 author: Kanthi Makineedi, Emilia Navarro, Grace Rendino
-date: "2024-12-12"
+date: "2024-12-15"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## R Markdown
+## Introduction
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The goal of this analysis is to use probabilistic modelling in order to determine the best setup for our restaurant (Restaurant X) to maximize the satisfaction of our patrons as well as the profit. To do so, we will model customer behavior in order to find a balance between wait time and profit. After careful modeling and consideration, we will take the decision of how many dining tables and chefs to include, as well as the operating hours of the restaurant. Over the course of the analysis, we will try to be as comprehensive as possible, yet we cannot test every single scenario. Therefore, using the scenarios that we test, we will try to determine the optimal scenario given our information. ***Add more relevant issues and challenges.*** Undergoing this analysis is crucial for the opening of our restaurant. Modeling crucial metrics that are essential in measuring the performance of our restaurant (waiting times, line lengths, down-times, ***ADD MORE***) is of utmost interest to us (the managers of the restaurant) and investors. We must know how to maximize efficiency and profits so that we can start our business in the smartest way possible, and present results to investors that affirm the profitability and satisfaction that our restaurant generates.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Scenario 1
 
-```{r cars}
-summary(cars)
+## Scenario 2
+
+## Scenario 3
+
+For the third scenario, we laid out the following situation: the restaurant still operates from 10AM-10PM with 5 tables, but with differing arrival times (modeled by a poisson process) and service times to more realistically model the restaurant experience. From 10AM-12PM, the arrival rate is 4 customers/hour (not prime meal time), from 12-3PM it is 12 customers/hour (more popular lunch time), from 3-5PM it is 5 customers/hour, and from 5-10PM it is 15 customers/hour (busy dinner time). The distribution of the arrival times is shown below. We can see that more people are arriving during lunch and especially the busier dinner hours in which the arrival rate increases:
+
+```{r, fig.height=2.75, fig.width=6, fig.align='center'}
+set.seed(223)
+
+time_intervals <- c(0, 120, 300, 420, 720)
+arrival_rates <- c(4, 12, 5, 15)
+service_rates <- c(6,6,6,6,6,6,6,9,9,9,9,9)
+n_tables <- 5
+
+#exponential rv
+#inverse_cdf_exp <- function(lambda) {
+ # -log(1 - runif(1)) / lambda
+#}
+
+simulate_poisson_arrivals <- function(lambda, start_time, end_time) {
+  n_arrivals <- rpois(1, (lambda / 60) * (end_time - start_time))
+  sort(runif(n_arrivals, start_time, end_time))
+}
+
+arrival_times <- c()
+for (i in 1:4) {
+  arrivals <- simulate_poisson_arrivals(arrival_rates[i], time_intervals[i], time_intervals[i + 1])
+  arrival_times <- c(arrival_times, arrivals)
+}
+
+arrival_times_in_day <- arrival_times + 600
+
+hist(arrival_times_in_day, 
+     main = "Histogram of Arrival Times (10 AM to 10 PM)", 
+     xlab = "Time of Day (Minutes from 10 AM)", 
+     ylab = "Frequency", 
+     col = "lightblue", 
+     border = "black", 
+     breaks = 20, 
+     xlim = c(600, 1320),
+     xaxt = "n")
+
+axis(1, at = seq(600, 1320, by = 60), labels = paste(seq(10, 22), "HRS", sep = " "))
 ```
 
-## Including Plots
+The service times were modeled with a rate 6 from 10AM-5PM and with rate 9 from 5PM-10PM to reflect the restaurant going from 2 chefs to 3. At first, we considered modelling the rate with an exponential distribution (as before), but then considered the following visualization:
 
-You can also embed plots, for example:
+```{r, fig.height=2.7, fig.width=6, fig.align='center'}
+set.seed(223)
+service_times_old <- sapply(arrival_times, function(t) {
+  hour <- ceiling(t / 60) 
+  rexp(1, rate = service_rates[hour]/60)
+})
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+hist(service_times_old, main = "Service Time Distribution - Exponential", xlab = "Service Time (minutes)", breaks = 30)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The exponential distribution made it so that there were a few service times that were very small just by the nature of the distribution. This was unrealistic, so we landed on a gamma distribution of the service times instead:
+
+```{r, fig.height=2.7, fig.width=6, fig.align='center'}
+set.seed(223)
+service_times <- sapply(arrival_times, function(t) {
+  hour <- ceiling(t / 60) 
+  shape <- 2
+  rate <- service_rates[hour] / 60
+  rgamma(1, shape = shape, rate = rate)
+})
+
+hist(service_times, main = "Service Time Distribution - Gamma", xlab = "Service Time (minutes)", breaks = 30)
+```
+
+We considered this distribution to be more realistic, and we can see that the mean and median lie around 15 minutes of service time.
+
+Then, we modeled the queue length over time. The visualization shows that lines reach peaks at around 12, 2PM and around 10PM. These are the busiest times for Restaurant X and the longest the line gets is 8 people. This is a good thing, considering that we want to create perceived demand for the restaurant, but not have a line that is so long that people leave or don't even try to wait. Still, there are less popular times when the line is 0 and therefore easy to get a table if anyone was desperate to try Restaurant X. Therefore, this is a good dynamic.
+
+```{r, fig.height=2.75, fig.width=6, fig.align='center'}
+set.seed(223)
+current_time <- 0
+downtime <- 0
+queue <- c()
+queue_lengths <- c()
+busy_tables <- rep(0, n_tables)
+waiting_times <- c()
+queue_waiting_times <- c()
+
+for (i in seq_along(arrival_times)) {
+  next_arrival <- arrival_times[i+1]
+  current_time <- arrival_times[i]
+  if(all(busy_tables <= current_time)){
+    #print(paste("All tables free"))
+  }
+  if (all(busy_tables <= current_time) && length(queue) == 0) {
+    downtime <- downtime + (next_arrival - current_time)
+    #print(paste("Downtime:", downtime))
+  }
+  busy_tables[busy_tables <= current_time] <- 0
+  if (any(busy_tables == 0)) {
+    next_table <- which(busy_tables == 0)[1]
+    service_time <- service_times[i]
+    busy_tables[next_table] <- current_time + service_time
+    #print(paste("Seating customer at table", next_table, "at time:", current_time, "for service time:", service_time))
+    waiting_times <- c(waiting_times, 0)
+  } else {
+    queue <- c(queue, current_time)
+  }
+  queue_lengths <- c(queue_lengths, length(queue))
+  while (length(queue) > 0 && any(busy_tables == 0)) {
+    next_table <- which(busy_tables == 0)[1]
+    wait_time <- current_time - queue[1]
+    waiting_times <- c(waiting_times, wait_time)
+    queue_waiting_times <- c(queue_waiting_times, wait_time)
+    service_time <- service_times[i]
+    busy_tables[next_table] <- current_time + service_time
+    queue <- queue[-1] 
+    queue_lengths <- c(queue_lengths, length(queue))
+  }
+}
+
+first_downtime <- arrival_times[1]
+total_dowtime <- downtime + first_downtime
+
+plot(queue_lengths, type = "l", xlab = "Time", ylab = "Queue Length", 
+     main = "Queue Length Over Time", col = "blue", lwd = 2, 
+     xaxt = "n", xlim = c(0, length(queue_lengths)))
+
+axis(1, at = seq(1, length(queue_lengths), by = length(queue_lengths) / 12), 
+     labels = paste(10 + (seq(1, length(queue_lengths), by = length(queue_lengths) / 12) - 1) / (length(queue_lengths) / 12), "HRS", sep=""))
+```
+
+After conduction more modelling, it was determined that the average waiting time across all customers that attend the restaurant is **3.88 minutes**, the average waiting time once in the queue is **19.23 minutes**, the total downtime is **51.95 minutes**. Overall we conclude that these are good numbers that not only increase the perception that our restaurant is in demand while overall not having overwhelming wait times, but also provides enough downtime to keep staff working productively. This scenario was important, because it was more realistic not only to the rates of arrival based on the hours, but also to the distribution of service rates. Also, assuming like in scenario 2 that each customer spends \$50 and each chef is paid \$40 an hour, it was concluded that one day results in a profit of \$5540, and after accounting for buying around \$1500 worth of food a day, the profit can be thought of as \$4040. This is a large profit that will allow Restaurant X a lot of opportunities for growth and investment. The profitability of the restaurant will enable it to expand its operations, improve its facilities, and potentially hire additional staff to accommodate more customers.
+
+## Project Analysis/Results/Conclusion
+
+-   include strengths and limitations of analysis and data
+
+-   Results are limited to important results and are clearly discussed and interpreted
+
+-   Key points and important criteria for evaluating results easily identified
+
+-   Project importance and relevance clearly communicated to the target audience
+
+-   I think its important to say why results say that we should have a certain layout and what that says about the profitability of Restaurant X
+
+-   say why it is a good investment
+
+-   future steps/other things we can do w/ analysis

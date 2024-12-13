@@ -197,12 +197,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>first_downtime <span class="ot">&lt;-</span> arrival_times[<span class="dv">1</span>]</span>
 <span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>total_dowtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> first_downtime</span>
 <span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(queue_lengths, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Queue Length"</span>, </span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Queue Length Over Time"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, </span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">length</span>(queue_lengths)))</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), </span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">paste</span>(<span class="dv">10</span> <span class="sc">+</span> (<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), <span class="st">"HRS"</span>, <span class="at">sep=</span><span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>chef_wage_per_hour <span class="ot">&lt;-</span> <span class="dv">40</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>total_chef_hrs <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span><span class="dv">7</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span><span class="dv">5</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>total_chef_wages <span class="ot">&lt;-</span> total_chef_hrs <span class="sc">*</span> chef_wage_per_hour </span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>spend_per_cust <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>total_revenue <span class="ot">&lt;-</span> <span class="dv">50</span><span class="sc">*</span><span class="fu">length</span>(arrival_times)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>profit <span class="ot">&lt;-</span> total_revenue <span class="sc">-</span> total_chef_wages</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(queue_lengths, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Queue Length"</span>, </span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Queue Length Over Time"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, </span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">length</span>(queue_lengths)))</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), </span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">paste</span>(<span class="dv">10</span> <span class="sc">+</span> (<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), <span class="st">"HRS"</span>, <span class="at">sep=</span><span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -210,13 +217,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>filtered_waiting_times <span class="ot">&lt;-</span> waiting_times[arrival_times_in_day <span class="sc">&gt;=</span> <span class="dv">1020</span> <span class="sc">&amp;</span> arrival_times_in_day <span class="sc">&lt;=</span> <span class="dv">1320</span>]</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>avg_wait_time_filtered <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(filtered_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(filtered_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>avg_wait_time_queue <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(queue_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(queue_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>avg_wait_time_queue <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(queue_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(queue_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Average Waiting Time Across All Customers: 3.875362 minutes</code></pre>
 </div>
@@ -224,13 +228,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Average Waiting Time in Queue: 19.23328 minutes</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time from 5-10PM:"</span>, avg_wait_time_filtered, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Average Waiting Time from 5-10PM: 1.309202 minutes</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, total_dowtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, total_dowtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total Downtime: 51.94565 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Profit: $"</span>, profit, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Profit: $ 5540 </code></pre>
 </div>
 </div>
 
