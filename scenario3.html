@@ -81,11 +81,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">111</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">223</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>time_intervals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">120</span>, <span class="dv">300</span>, <span class="dv">420</span>, <span class="dv">720</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>arrival_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">13</span>, <span class="dv">8</span>, <span class="dv">17</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>service_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>arrival_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">12</span>, <span class="dv">5</span>, <span class="dv">15</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>service_rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>,<span class="dv">9</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n_tables <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#exponential rv</span></span>
@@ -124,14 +124,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>service_times <span class="ot">&lt;-</span> <span class="fu">sapply</span>(arrival_times, <span class="cf">function</span>(t) {</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>service_times_old <span class="ot">&lt;-</span> <span class="fu">sapply</span>(arrival_times, <span class="cf">function</span>(t) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  hour <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(t <span class="sc">/</span> <span class="dv">60</span>) </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rexp</span>(<span class="dv">1</span>, <span class="at">rate =</span> service_rates[hour]<span class="sc">/</span><span class="dv">60</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sample_service_times <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">100</span>, <span class="at">rate =</span> <span class="fl">0.2</span>) </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(sample_service_times, <span class="at">main =</span> <span class="st">"Service Time Distribution"</span>, <span class="at">xlab =</span> <span class="st">"Service Time (minutes)"</span>, <span class="at">breaks =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(service_times_old, <span class="at">main =</span> <span class="st">"Service Time Distribution - Exponential"</span>, <span class="at">xlab =</span> <span class="st">"Service Time (minutes)"</span>, <span class="at">breaks =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -139,170 +138,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>downtime <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>queue <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>busy_tables <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n_tables)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>service_times <span class="ot">&lt;-</span> <span class="fu">sapply</span>(arrival_times, <span class="cf">function</span>(t) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  hour <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(t <span class="sc">/</span> <span class="dv">60</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  shape <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  rate <span class="ot">&lt;-</span> service_rates[hour] <span class="sc">/</span> <span class="dv">60</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rgamma</span>(<span class="dv">1</span>, <span class="at">shape =</span> shape, <span class="at">rate =</span> rate)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(arrival_times)) {</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  next_arrival <span class="ot">&lt;-</span> arrival_times[i]</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">&amp;&amp;</span> current_time <span class="sc">&lt;</span> next_arrival) {</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    downtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> (next_arrival <span class="sc">-</span> current_time)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Downtime:"</span>, downtime))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  current_time <span class="ot">&lt;-</span> next_arrival</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  busy_tables[busy_tables <span class="sc">&lt;=</span> current_time] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Seating customer at table"</span>, next_table, <span class="st">"at time:"</span>, current_time, <span class="st">"for service time:"</span>, service_time))</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(waiting_times, <span class="dv">0</span>)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    queue <span class="ot">&lt;-</span> <span class="fu">c</span>(queue, current_time)</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>(queue_lengths, <span class="fu">length</span>(queue))</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="fu">length</span>(queue) <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    wait_time <span class="ot">&lt;-</span> current_time <span class="sc">-</span> queue[<span class="dv">1</span>]</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(waiting_times, wait_time)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    queue <span class="ot">&lt;-</span> queue[<span class="sc">-</span><span class="dv">1</span>] </span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>(queue_lengths, <span class="fu">length</span>(queue))</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Downtime: 1.27894140779972"
-[1] "Seating customer at table 1 at time: 1.27894140779972 for service time: 4.99000896932557"
-[1] "Seating customer at table 2 at time: 5.70574239827693 for service time: 11.5611630297139"
-[1] "Seating customer at table 1 at time: 8.05693720467389 for service time: 1.91609330708161"
-[1] "Seating customer at table 1 at time: 11.2417823821306 for service time: 5.32095698862204"
-[1] "Seating customer at table 1 at time: 18.744301898405 for service time: 53.0929295247327"
-[1] "Seating customer at table 2 at time: 20.5732424464077 for service time: 11.7978875425862"
-[1] "Seating customer at table 2 at time: 44.4506404269487 for service time: 7.34908571932465"
-[1] "Seating customer at table 3 at time: 45.3195859026164 for service time: 7.3618605080992"
-[1] "Seating customer at table 4 at time: 50.2004790958017 for service time: 25.8023301778797"
-[1] "Seating customer at table 2 at time: 51.8592739664018 for service time: 1.78684489935833"
-[1] "Seating customer at table 3 at time: 53.5713316127658 for service time: 46.5967430521674"
-[1] "Seating customer at table 2 at time: 61.790859606117 for service time: 28.5764023649011"
-[1] "Seating customer at table 5 at time: 63.8754290621728 for service time: 7.84265496768057"
-[1] "Seating customer at table 1 at time: 115.984115190804 for service time: 0.838023440546181"
-[1] "Seating customer at table 1 at time: 125.898896539584 for service time: 34.402396634911"
-[1] "Seating customer at table 2 at time: 130.54736324586 for service time: 21.9680363222815"
-[1] "Seating customer at table 3 at time: 140.936786709353 for service time: 7.54442345914747"
-[1] "Seating customer at table 1 at time: 170.994629943743 for service time: 32.0763921768742"
-[1] "Seating customer at table 2 at time: 171.394876465201 for service time: 2.43470409186557"
-[1] "Seating customer at table 2 at time: 177.964810947888 for service time: 23.3128203564427"
-[1] "Seating customer at table 3 at time: 179.128496171907 for service time: 27.0416701944981"
-[1] "Seating customer at table 4 at time: 179.939042469487 for service time: 2.11209669476375"
-[1] "Seating customer at table 5 at time: 181.587242474779 for service time: 24.4442041485075"
-[1] "Seating customer at table 4 at time: 184.754166975617 for service time: 17.9602010293507"
-[1] "Seating customer at table 1 at time: 203.842637334019 for service time: 14.4208915990995"
-[1] "Seating customer at table 3 at time: 211.781974802725 for service time: 2.86719965049997"
-[1] "Seating customer at table 1 at time: 218.689206582494 for service time: 11.3737117946452"
-[1] "Seating customer at table 3 at time: 223.543596784584 for service time: 7.52846368588507"
-[1] "Seating customer at table 4 at time: 225.308049763553 for service time: 34.6234531216046"
-[1] "Seating customer at table 5 at time: 227.265714327805 for service time: 7.91566439459352"
-[1] "Seating customer at table 1 at time: 233.039203262888 for service time: 4.59619092056528"
-[1] "Seating customer at table 2 at time: 234.424371812493 for service time: 0.875416717548305"
-[1] "Seating customer at table 2 at time: 235.415614508092 for service time: 1.61187532274381"
-[1] "Seating customer at table 3 at time: 235.585327888839 for service time: 3.43397245975211"
-[1] "Seating customer at table 2 at time: 237.581301857717 for service time: 35.5592003538927"
-[1] "Seating customer at table 1 at time: 248.41386354994 for service time: 2.06347739199293"
-[1] "Seating customer at table 1 at time: 250.529669984244 for service time: 29.2899150854412"
-[1] "Seating customer at table 3 at time: 261.118671717122 for service time: 5.54471567777009"
-[1] "Seating customer at table 4 at time: 261.737025459297 for service time: 1.20579633163288"
-[1] "Seating customer at table 5 at time: 262.879615779966 for service time: 2.20451671862975"
-[1] "Seating customer at table 4 at time: 264.918164410628 for service time: 2.40702966740006"
-[1] "Seating customer at table 2 at time: 274.065948813222 for service time: 0.57334143693932"
-[1] "Seating customer at table 1 at time: 287.133448426612 for service time: 32.5353821254989"
-[1] "Seating customer at table 2 at time: 294.154946208 for service time: 13.7606545065735"
-[1] "Seating customer at table 3 at time: 299.408999048173 for service time: 67.7519227340262"
-[1] "Seating customer at table 4 at time: 300.111036077142 for service time: 28.5272745216701"
-[1] "Seating customer at table 5 at time: 301.407097801566 for service time: 8.16001716535538"
-[1] "Seating customer at table 2 at time: 311.58942785114 for service time: 5.00886627472937"
-[1] "Seating customer at table 1 at time: 320.791304754093 for service time: 18.9060795440556"
-[1] "Seating customer at table 5 at time: 327.831550128758 for service time: 11.7727272066506"
-[1] "Seating customer at table 4 at time: 331.106707770377 for service time: 12.6865127071025"
-[1] "Seating customer at table 1 at time: 354.451780160889 for service time: 7.1275767730549"
-[1] "Seating customer at table 5 at time: 356.009285654873 for service time: 1.93290903232992"
-[1] "Seating customer at table 1 at time: 379.833447318524 for service time: 11.5940851851584"
-[1] "Seating customer at table 1 at time: 396.664821021259 for service time: 2.4748663432071"
-[1] "Seating customer at table 1 at time: 405.310073532164 for service time: 9.2954975925386"
-[1] "Seating customer at table 2 at time: 410.313849784434 for service time: 26.0807719098765"
-[1] "Seating customer at table 1 at time: 423.63551331684 for service time: 0.88959150376599"
-[1] "Seating customer at table 1 at time: 431.648712912574 for service time: 6.11083668190986"
-[1] "Seating customer at table 3 at time: 433.936981838197 for service time: 9.44566878208868"
-[1] "Seating customer at table 1 at time: 443.754278873093 for service time: 6.16353428922594"
-[1] "Seating customer at table 2 at time: 445.984204094857 for service time: 7.14249451712308"
-[1] "Seating customer at table 3 at time: 447.114304807037 for service time: 5.78041905071586"
-[1] "Seating customer at table 4 at time: 448.53724595625 for service time: 7.06320415208948"
-[1] "Seating customer at table 1 at time: 451.360365380533 for service time: 2.28182554710656"
-[1] "Seating customer at table 2 at time: 453.595709572546 for service time: 1.61187607795"
-[1] "Seating customer at table 1 at time: 455.955654527061 for service time: 0.0328358133051269"
-[1] "Seating customer at table 1 at time: 459.034913945943 for service time: 9.25055621923733"
-[1] "Seating customer at table 2 at time: 459.329420076683 for service time: 4.6517775096672"
-[1] "Seating customer at table 3 at time: 460.864676283672 for service time: 22.5849385889872"
-[1] "Seating customer at table 1 at time: 469.315477930941 for service time: 2.65867650043219"
-[1] "Seating customer at table 1 at time: 472.885418152437 for service time: 2.82383863348514"
-[1] "Seating customer at table 1 at time: 479.526883112267 for service time: 11.1716833240808"
-[1] "Seating customer at table 2 at time: 483.019201252609 for service time: 9.65629785279644"
-[1] "Seating customer at table 3 at time: 484.696431602351 for service time: 14.8276489592137"
-[1] "Seating customer at table 1 at time: 493.83444509469 for service time: 6.55286858323961"
-[1] "Seating customer at table 2 at time: 495.397085817531 for service time: 8.80801386157882"
-[1] "Seating customer at table 4 at time: 499.153884295374 for service time: 6.35277015157044"
-[1] "Seating customer at table 5 at time: 499.264166532084 for service time: 3.14251281423027"
-[1] "Seating customer at table 3 at time: 500.108601646498 for service time: 3.03093639202416"
-[1] "Seating customer at table 1 at time: 508.121277512982 for service time: 3.98288077209145"
-[1] "Seating customer at table 1 at time: 525.289622442797 for service time: 1.00819880608469"
-[1] "Seating customer at table 2 at time: 525.447993194684 for service time: 6.34244672488421"
-[1] "Seating customer at table 1 at time: 532.439939752221 for service time: 7.72982077631068"
-[1] "Seating customer at table 2 at time: 536.14492891822 for service time: 1.30489839071995"
-[1] "Seating customer at table 2 at time: 539.426844315603 for service time: 1.33092812728137"
-[1] "Seating customer at table 3 at time: 540.101362885907 for service time: 6.08273030724376"
-[1] "Seating customer at table 1 at time: 544.298044340685 for service time: 7.14246105360699"
-[1] "Seating customer at table 1 at time: 554.512018435635 for service time: 1.38875148724765"
-[1] "Seating customer at table 1 at time: 556.631492315792 for service time: 8.76914294394565"
-[1] "Seating customer at table 2 at time: 558.253388064913 for service time: 10.7366318903388"
-[1] "Seating customer at table 3 at time: 563.575991154648 for service time: 10.5517501566083"
-[1] "Seating customer at table 1 at time: 573.329695388675 for service time: 2.16839378233999"
-[1] "Seating customer at table 2 at time: 574.385886294767 for service time: 1.33105030748993"
-[1] "Seating customer at table 1 at time: 584.673814550042 for service time: 27.1577257464144"
-[1] "Seating customer at table 2 at time: 588.977360730059 for service time: 9.95265422346902"
-[1] "Seating customer at table 3 at time: 590.849325251766 for service time: 7.67972381485285"
-[1] "Seating customer at table 4 at time: 592.799118049443 for service time: 0.785282379947603"
-[1] "Seating customer at table 4 at time: 593.701772396453 for service time: 0.668709171004593"
-[1] "Seating customer at table 5 at time: 593.995604971424 for service time: 6.33270762395114"
-[1] "Seating customer at table 2 at time: 604.758997731842 for service time: 8.9941723454268"
-[1] "Seating customer at table 4 at time: 605.135852149688 for service time: 24.6175244624231"
-[1] "Seating customer at table 5 at time: 608.946346845478 for service time: 26.4617202232096"
-[1] "Seating customer at table 1 at time: 612.018696153536 for service time: 8.75247634343408"
-[1] "Seating customer at table 2 at time: 615.276328129694 for service time: 9.79992653819334"
-[1] "Seating customer at table 1 at time: 624.058593744412 for service time: 4.17881041299552"
-[1] "Seating customer at table 2 at time: 625.435805115849 for service time: 5.10650013573468"
-[1] "Seating customer at table 1 at time: 640.431802701205 for service time: 5.15621345490217"
-[1] "Seating customer at table 1 at time: 651.284320936538 for service time: 8.81122489417803"
-[1] "Seating customer at table 5 at time: 654.433019114658 for service time: 15.7164195061651"
-[1] "Seating customer at table 1 at time: 665.649100025184 for service time: 17.9505378372016"
-[1] "Seating customer at table 3 at time: 665.911567797884 for service time: 6.38695605564862"
-[1] "Seating customer at table 4 at time: 667.344660270028 for service time: 11.2020430989088"
-[1] "Seating customer at table 5 at time: 670.806034519337 for service time: 18.7390661231222"
-[1] "Seating customer at table 3 at time: 674.108187952079 for service time: 14.534786659384"
-[1] "Seating customer at table 4 at time: 681.191911180504 for service time: 12.7137394897164"
-[1] "Seating customer at table 1 at time: 684.364640135318 for service time: 38.5387048663056"
-[1] "Seating customer at table 3 at time: 691.171301370487 for service time: 0.820740358904004"
-[1] "Seating customer at table 3 at time: 695.991593138315 for service time: 12.2348552193017"
-[1] "Seating customer at table 3 at time: 709.18393899221 for service time: 26.6934985841129"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(queue_lengths, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Queue Length"</span>, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Queue Length Over Time"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">length</span>(queue_lengths)))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">paste</span>(<span class="dv">10</span> <span class="sc">+</span> (<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), <span class="st">"HRS"</span>, <span class="at">sep=</span><span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(service_times, <span class="at">main =</span> <span class="st">"Service Time Distribution - Gamma"</span>, <span class="at">xlab =</span> <span class="st">"Service Time (minutes)"</span>, <span class="at">breaks =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -310,15 +153,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Average Waiting Time Across All Customers: 3.022725 minutes</code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>current_time <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>downtime <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>queue <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>busy_tables <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n_tables)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>queue_waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(arrival_times)) {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  next_arrival <span class="ot">&lt;-</span> arrival_times[i<span class="sc">+</span><span class="dv">1</span>]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  current_time <span class="ot">&lt;-</span> arrival_times[i]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">all</span>(busy_tables <span class="sc">&lt;=</span> current_time)){</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(paste("All tables free"))</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">all</span>(busy_tables <span class="sc">&lt;=</span> current_time) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(queue) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    downtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> (next_arrival <span class="sc">-</span> current_time)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(paste("Downtime:", downtime))</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  busy_tables[busy_tables <span class="sc">&lt;=</span> current_time] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(paste("Seating customer at table", next_table, "at time:", current_time, "for service time:", service_time))</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(waiting_times, <span class="dv">0</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    queue <span class="ot">&lt;-</span> <span class="fu">c</span>(queue, current_time)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>(queue_lengths, <span class="fu">length</span>(queue))</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (<span class="fu">length</span>(queue) <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">any</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)) {</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    next_table <span class="ot">&lt;-</span> <span class="fu">which</span>(busy_tables <span class="sc">==</span> <span class="dv">0</span>)[<span class="dv">1</span>]</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    wait_time <span class="ot">&lt;-</span> current_time <span class="sc">-</span> queue[<span class="dv">1</span>]</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(waiting_times, wait_time)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    queue_waiting_times <span class="ot">&lt;-</span> <span class="fu">c</span>(queue_waiting_times, wait_time)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    service_time <span class="ot">&lt;-</span> service_times[i]</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    busy_tables[next_table] <span class="ot">&lt;-</span> current_time <span class="sc">+</span> service_time</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    queue <span class="ot">&lt;-</span> queue[<span class="sc">-</span><span class="dv">1</span>] </span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    queue_lengths <span class="ot">&lt;-</span> <span class="fu">c</span>(queue_lengths, <span class="fu">length</span>(queue))</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>first_downtime <span class="ot">&lt;-</span> arrival_times[<span class="dv">1</span>]</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>total_dowtime <span class="ot">&lt;-</span> downtime <span class="sc">+</span> first_downtime</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(queue_lengths, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">xlab =</span> <span class="st">"Time"</span>, <span class="at">ylab =</span> <span class="st">"Queue Length"</span>, </span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Queue Length Over Time"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, </span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">length</span>(queue_lengths)))</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), </span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>     <span class="at">labels =</span> <span class="fu">paste</span>(<span class="dv">10</span> <span class="sc">+</span> (<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(queue_lengths), <span class="at">by =</span> <span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fu">length</span>(queue_lengths) <span class="sc">/</span> <span class="dv">12</span>), <span class="st">"HRS"</span>, <span class="at">sep=</span><span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="scenario3_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, downtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>avg_wait_time_queue <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(queue_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(queue_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Total Downtime: 1.278941 minutes</code></pre>
+<pre><code>Average Waiting Time Across All Customers: 3.875362 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time in Queue:"</span>, avg_wait_time_queue, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Average Waiting Time in Queue: 19.23328 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, total_dowtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total Downtime: 51.94565 minutes</code></pre>
 </div>
 </div>
 

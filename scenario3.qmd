@@ -1,10 +1,10 @@
 ```{r}
 
-set.seed(111)
+set.seed(223)
 
 time_intervals <- c(0, 120, 300, 420, 720)
-arrival_rates <- c(8, 13, 8, 17)
-service_rates <- c(4, 4, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6)
+arrival_rates <- c(4, 12, 5, 15)
+service_rates <- c(6,6,6,6,6,6,6,9,9,9,9,9,9,9)
 n_tables <- 5
 
 #exponential rv
@@ -37,14 +37,22 @@ hist(arrival_times_in_day,
 
 axis(1, at = seq(600, 1320, by = 60), labels = paste(seq(10, 22), "HRS", sep = " "))
 
-service_times <- sapply(arrival_times, function(t) {
+service_times_old <- sapply(arrival_times, function(t) {
   hour <- ceiling(t / 60) 
   rexp(1, rate = service_rates[hour]/60)
 })
 
-sample_service_times <- rexp(100, rate = 0.2) 
 
-hist(sample_service_times, main = "Service Time Distribution", xlab = "Service Time (minutes)", breaks = 30)
+hist(service_times_old, main = "Service Time Distribution - Exponential", xlab = "Service Time (minutes)", breaks = 30)
+
+service_times <- sapply(arrival_times, function(t) {
+  hour <- ceiling(t / 60) 
+  shape <- 2
+  rate <- service_rates[hour] / 60
+  rgamma(1, shape = shape, rate = rate)
+})
+
+hist(service_times, main = "Service Time Distribution - Gamma", xlab = "Service Time (minutes)", breaks = 30)
 
 current_time <- 0
 downtime <- 0
@@ -52,20 +60,24 @@ queue <- c()
 queue_lengths <- c()
 busy_tables <- rep(0, n_tables)
 waiting_times <- c()
+queue_waiting_times <- c()
 
 for (i in seq_along(arrival_times)) {
-  next_arrival <- arrival_times[i]
-  if (all(busy_tables == 0) && current_time < next_arrival) {
-    downtime <- downtime + (next_arrival - current_time)
-    print(paste("Downtime:", downtime))
+  next_arrival <- arrival_times[i+1]
+  current_time <- arrival_times[i]
+  if(all(busy_tables <= current_time)){
+    #print(paste("All tables free"))
   }
-  current_time <- next_arrival
+  if (all(busy_tables <= current_time) && length(queue) == 0) {
+    downtime <- downtime + (next_arrival - current_time)
+    #print(paste("Downtime:", downtime))
+  }
   busy_tables[busy_tables <= current_time] <- 0
   if (any(busy_tables == 0)) {
     next_table <- which(busy_tables == 0)[1]
     service_time <- service_times[i]
     busy_tables[next_table] <- current_time + service_time
-    print(paste("Seating customer at table", next_table, "at time:", current_time, "for service time:", service_time))
+    #print(paste("Seating customer at table", next_table, "at time:", current_time, "for service time:", service_time))
     waiting_times <- c(waiting_times, 0)
   } else {
     queue <- c(queue, current_time)
@@ -75,12 +87,16 @@ for (i in seq_along(arrival_times)) {
     next_table <- which(busy_tables == 0)[1]
     wait_time <- current_time - queue[1]
     waiting_times <- c(waiting_times, wait_time)
+    queue_waiting_times <- c(queue_waiting_times, wait_time)
     service_time <- service_times[i]
     busy_tables[next_table] <- current_time + service_time
     queue <- queue[-1] 
     queue_lengths <- c(queue_lengths, length(queue))
   }
 }
+
+first_downtime <- arrival_times[1]
+total_dowtime <- downtime + first_downtime
 
 plot(queue_lengths, type = "l", xlab = "Time", ylab = "Queue Length", 
      main = "Queue Length Over Time", col = "blue", lwd = 2, 
@@ -90,8 +106,10 @@ axis(1, at = seq(1, length(queue_lengths), by = length(queue_lengths) / 12),
      labels = paste(10 + (seq(1, length(queue_lengths), by = length(queue_lengths) / 12) - 1) / (length(queue_lengths) / 12), "HRS", sep=""))
 
 avg_wait_time <- if (length(waiting_times) > 0) mean(waiting_times) else 0
+avg_wait_time_queue <- if (length(queue_waiting_times) > 0) mean(queue_waiting_times) else 0
 
 cat("Average Waiting Time Across All Customers:", avg_wait_time, "minutes\n")
-cat("Total Downtime:", downtime, "minutes\n")
+cat("Average Waiting Time in Queue:", avg_wait_time_queue, "minutes\n")
+cat("Total Downtime:", total_dowtime, "minutes\n")
 
 ```
