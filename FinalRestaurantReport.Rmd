@@ -1,8 +1,9 @@
 ---
-title: "FinalReportProbability"
+title: "Probability Final Report"
 output:
   pdf_document: default
   html_document: default
+author: Kanthi Makineedi, Emilia Navarro, Grace Rendino
 date: "2024-12-12"
 ---
 

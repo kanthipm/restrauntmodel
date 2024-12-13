@@ -105,11 +105,15 @@ plot(queue_lengths, type = "l", xlab = "Time", ylab = "Queue Length",
 axis(1, at = seq(1, length(queue_lengths), by = length(queue_lengths) / 12), 
      labels = paste(10 + (seq(1, length(queue_lengths), by = length(queue_lengths) / 12) - 1) / (length(queue_lengths) / 12), "HRS", sep=""))
 
+filtered_waiting_times <- waiting_times[arrival_times_in_day >= 1020 & arrival_times_in_day <= 1320]
+
+avg_wait_time_filtered <- if (length(filtered_waiting_times) > 0) mean(filtered_waiting_times) else 0
 avg_wait_time <- if (length(waiting_times) > 0) mean(waiting_times) else 0
 avg_wait_time_queue <- if (length(queue_waiting_times) > 0) mean(queue_waiting_times) else 0
 
 cat("Average Waiting Time Across All Customers:", avg_wait_time, "minutes\n")
 cat("Average Waiting Time in Queue:", avg_wait_time_queue, "minutes\n")
+cat("Average Waiting Time from 5-10PM:", avg_wait_time_filtered, "minutes\n")
 cat("Total Downtime:", total_dowtime, "minutes\n")
 
 ```

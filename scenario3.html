@@ -210,10 +210,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>avg_wait_time_queue <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(queue_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(queue_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>filtered_waiting_times <span class="ot">&lt;-</span> waiting_times[arrival_times_in_day <span class="sc">&gt;=</span> <span class="dv">1020</span> <span class="sc">&amp;</span> arrival_times_in_day <span class="sc">&lt;=</span> <span class="dv">1320</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>avg_wait_time_filtered <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(filtered_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(filtered_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>avg_wait_time <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>avg_wait_time_queue <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">length</span>(queue_waiting_times) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">mean</span>(queue_waiting_times) <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time Across All Customers:"</span>, avg_wait_time, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Average Waiting Time Across All Customers: 3.875362 minutes</code></pre>
 </div>
@@ -221,7 +224,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Average Waiting Time in Queue: 19.23328 minutes</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, total_dowtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average Waiting Time from 5-10PM:"</span>, avg_wait_time_filtered, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Average Waiting Time from 5-10PM: 1.309202 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total Downtime:"</span>, total_dowtime, <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total Downtime: 51.94565 minutes</code></pre>
 </div>
