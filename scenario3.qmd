@@ -4,7 +4,7 @@ set.seed(223)
 
 time_intervals <- c(0, 120, 300, 420, 720)
 arrival_rates <- c(4, 12, 5, 15)
-service_rates <- c(6,6,6,6,6,6,6,9,9,9,9,9,9,9)
+service_rates <- c(6,6,6,6,6,6,6,9,9,9,9,9)
 n_tables <- 5
 
 #exponential rv
