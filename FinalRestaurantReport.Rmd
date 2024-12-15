@@ -13,11 +13,211 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Introduction
 
-The goal of this analysis is to use probabilistic modelling in order to determine the best setup for our restaurant (Restaurant X) to maximize the satisfaction of our patrons as well as the profit. To do so, we will model customer behavior in order to find a balance between wait time and profit. After careful modeling and consideration, we will take the decision of how many dining tables and chefs to include, as well as the operating hours of the restaurant. Over the course of the analysis, we will try to be as comprehensive as possible, yet we cannot test every single scenario. Therefore, using the scenarios that we test, we will try to determine the optimal scenario given our information. ***Add more relevant issues and challenges.*** Undergoing this analysis is crucial for the opening of our restaurant. Modeling crucial metrics that are essential in measuring the performance of our restaurant (waiting times, line lengths, down-times, ***ADD MORE***) is of utmost interest to us (the managers of the restaurant) and investors. We must know how to maximize efficiency and profits so that we can start our business in the smartest way possible, and present results to investors that affirm the profitability and satisfaction that our restaurant generates.
+The goal of this analysis is to use probabilistic modelling in order to determine the best setup for our restaurant (Restaurant X) to maximize the satisfaction of our patrons as well as the profit. To do so, we will model customer behavior in order to find a balance between wait time and profit. After careful modeling and consideration, we will take the decision of how many dining tables and chefs to include, as well as the operating hours of the restaurant. Over the course of the analysis, we will try to be as comprehensive as possible, yet we cannot test every single scenario. Therefore, using the scenarios that we test, we will try to determine the optimal scenario given our information. ***Add more relevant issues and challenges.*** Undergoing this analysis is crucial for the opening of our restaurant. Modeling crucial metrics that are essential in measuring the performance of our restaurant (waiting times, queue lengths, down-times, and profits) is of utmost interest to us (the managers of the restaurant) and investors. We must know how to maximize efficiency and profits so that we can start our business in the smartest way possible, and present results to investors that affirm the profitability and satisfaction that our restaurant generates.
 
 ## Scenario 1
 
+In the first scenario, the restaurant operates with one dining table and one chef from 10 AM to 10 PM (12 hours). Customer arrivals follow a Poisson process with a rate of 5 customers per hour, and the service times follow an exponential distribution with a rate of 6. If the table was occupied when a customer arrived, they would wait in line until the table became vacant.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+set.seed(2) 
+
+operating_hours <- 12  
+lambda_arrival <- 5   
+lambda_service <- 6   
+
+total_arrivals <- rpois(1, lambda_arrival * operating_hours)
+arrival_times <- cumsum(rexp(total_arrivals, rate = lambda_arrival))
+
+service_times <- rexp(total_arrivals, rate = lambda_service)
+
+wait_times <- numeric(total_arrivals)
+queue_lengths <- numeric(total_arrivals)
+table_free_time <- 0
+current_queue <- 0
+downtime <- 0
+
+for (i in 1:total_arrivals) {
+  if (arrival_times[i] > table_free_time) {
+    downtime <- downtime + (arrival_times[i] - table_free_time)
+  }
+  
+  while (current_queue > 0 && table_free_time <= arrival_times[i]) {
+    current_queue <- current_queue - 1
+  }
+  
+  wait_time <- max(0, table_free_time - arrival_times[i])
+  wait_times[i] <- wait_time
+  
+  if (arrival_times[i] < table_free_time) {
+    current_queue <- current_queue + 1
+  }
+  
+  table_free_time <- max(table_free_time, arrival_times[i]) + service_times[i]
+  
+  queue_lengths[i] <- current_queue
+}
+
+mean_wait <- mean(wait_times) * 60 
+median_wait <- median(wait_times) * 60 
+mean_queue_length <- mean(queue_lengths)
+downtime_hours <- downtime
+
+results <- data.frame(
+  Metric = c("Mean Waiting (min)", "Median Waiting (min)", "Mean Queue Length", "Downtime (hours)"),
+  Value = c(mean_wait, median_wait, mean_queue_length, downtime_hours)
+)
+
+print(results)
+```
+
+The average waiting time of 14.35 minutes and the median waiting time of 12.01 minutes show that customers experience moderate waiting times. This indicates that demand for the restaurant is steady, but wait times are still reasonable. The mean queue length of 3.57 customers suggests that the line grows consistently but does not become unmanageable. The 3.66 hours of downtime provide the chef with sufficient breaks, ensuring they are not overworked and that the restaurant maintains operational efficiency.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+wait_times_df <- data.frame(wait_times)
+queue_length_df <- data.frame(queue_lengths)
+
+waiting_times_plot <- ggplot(wait_times_df, aes(x = wait_times)) +
+  geom_histogram(binwidth = 0.1, fill = "skyblue", color = "black") +
+  labs(title = "Frequency of Customers by Waiting Times",
+       x = "Waiting Time (hours)", y = "Frequency (Number of Customers") +
+  scale_y_continuous(breaks = seq(0, 20, 2)) +
+  theme_minimal(base_size = 12) + 
+  theme(
+    plot.title = element_text(size = rel(0.85), face = "bold", hjust = 0.5), 
+    axis.title = element_text(size = rel(0.8)),              
+    axis.text = element_text(size = rel(0.6))           
+  )
+
+queue_lengths_plot <- ggplot(queue_length_df, aes(x = queue_lengths)) +
+  geom_histogram(binwidth = 1, fill = "lightgreen", color = "black") +
+  labs(title = "Frequency of Customers by Queue Lengths",
+       x = "Queue Length", y = "Frequency (Number of Customers)") +
+  scale_y_continuous(breaks = seq(0, 15, 2)) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = rel(0.85), face = "bold", hjust = 0.5),  
+    axis.title = element_text(size = rel(0.8)),              
+    axis.text = element_text(size = rel(0.6))                
+  )
+
+grid.arrange(waiting_times_plot, queue_lengths_plot, ncol = 2)
+
+```
+
+The histogram of waiting times reveals that most customers experience minimal to moderate waits, with a significant portion of waiting times falling near 0 hours. This is a positive indicator, as short wait times are more likely to retain customers while also creating the impression of consistent demand. However, a noticeable tail in the distribution shows that a smaller portion of customers experience longer waits, which is expected since there is only one table and one chef.
+
+The histogram of queue lengths shows that queues are frequently short, with most queue lengths ranging between 0 and 5 customers. This aligns with the manageable level of demand observed in this setting. The queue occasionally reaches longer lengths, peaking at 12 customers, but this remains rare. Peaks can contribute to the perception of high demand for the restaurant without overwhelming the single chef.
+
 ## Scenario 2
+
+Scenario 2 For the second scenario, we examine the performance metrics of a restaurant with 5 dining tables and L chefs, operating daily from 10:00 AM to 10:00 PM. Customers arrive according to a Poisson process with an average arrival rate of 10 customers per hour. Once a customer is seated, their total service time (including ordering, cooking, and eating) follows an exponential distribution with a rate of 3, where L represents the number of chefs employed. Each customer spends 50 per meal, and each chef earns 40 per hour. The plot below shows how the waiting time varies throughout the 12 hour period. The X-axis represents time in hours, while the y-axis shows waiting time in minutes. 
+
+```{r}
+
+set.seed(123)
+
+lambda_A <- 10           
+L <- 2                    
+lambda_S <- 3 * L        
+num_tables <- 5
+operating_hours <- 12
+total_minutes <- operating_hours * 60
+
+lambda_A_min <- lambda_A / 60
+lambda_S_min <- lambda_S / 60
+
+arrival_times <- numeric()
+t <- 0
+while (t < total_minutes) {
+  t <- t + rexp(1, rate = lambda_A_min)
+  if (t < total_minutes) arrival_times <- c(arrival_times, t)
+}
+
+service_times <- rexp(length(arrival_times), rate = lambda_S_min)
+
+table_free <- rep(0, num_tables)
+
+waiting_times <- numeric(length(arrival_times))
+queue <- numeric()
+
+system_empty_start <- 0
+total_downtime <- 0
+
+queue_lengths <- numeric(length(arrival_times))
+
+for (i in seq_along(arrival_times)) {
+  arrival <- arrival_times[i]
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    total_downtime <- total_downtime + (arrival - system_empty_start)
+  }
+  
+  free_tables <- which(table_free <= arrival)
+  
+  if (length(free_tables) > 0 && length(queue) == 0) {
+    chosen <- free_tables[1]
+    waiting_times[i] <- 0
+    end_time <- arrival + service_times[i]
+    table_free[chosen] <- end_time
+  } else {
+    queue <- c(queue, i)
+  }
+  
+  repeat {
+    free_tables <- which(table_free <= arrival)
+    if (length(free_tables) > 0 && length(queue) > 0) {
+      next_cust <- queue[1]
+      queue <- queue[-1]
+      waiting_times[next_cust] <- arrival - arrival_times[next_cust]
+      end_time <- arrival + service_times[next_cust]
+      table_free[free_tables[1]] <- end_time
+    } else {
+      break
+    }
+  }
+  
+  queue_lengths[i] <- length(queue)
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    system_empty_start <- arrival
+  }
+}
+
+current_time <- max(arrival_times)
+while (length(queue) > 0) {
+  soonest_table <- which.min(table_free)
+  next_free <- table_free[soonest_table]
+  
+  next_cust <- queue[1]
+  queue <- queue[-1]
+  
+  waiting_times[next_cust] <- next_free - arrival_times[next_cust]
+  table_free[soonest_table] <- next_free + service_times[next_cust]
+  current_time <- next_free
+}
+
+waiting_plot <- plot((arrival_times/60), waiting_times, type = "l",
+     xlab = "Time (hours)", ylab = "Waiting (min)", main = "Waiting Time Over Time")
+
+```
+
+The waiting time remains relatively stable and low throughout most of the day. The peak waiting times occur during the busiest times of the day when customer arrivals are at their highest, such as around 7 to 8 hours into the 12 hour period (5:00 PM to 6:00 PM) and 11 hours into the 12 hour period (9:00 PM). This plot confirms that for most of the day, customers are experiencing little to no wait, on average and the restaurant is able to handle customer arrivals efficiently. However, surges in waiting times suggest that staffing adjustments during peak hours could further optimize customer flow and reduce these spikes. 
+
+```{r}
+
+arrival_plot <- plot((arrival_times/60), queue_lengths, type = "l",
+     xlab = "Time (hours)", ylab = "Queue Length", main = "Queue Length Over Time")
+```
+
+This plot shows the number of customers waiting in line over the course of the operating day. The x-axis represents time in hours, and the y-axis shows the number of customers in the queue. The queue length tends to remain very low, with only increases at times when customer arrivals are higher. At certain points, the queue grows slightly but does not exceed more than 8 minutes, indicating that customers are being seated fairly quickly. This indicates that the restaurant is operating efficiently, with sufficient capacity to serve customers quickly. The low queue length during off-peak hours also indicates that there are periods of underutilization, which might lead to potential staffing adjustments.
+
 
 ## Scenario 3
 
@@ -164,3 +364,16 @@ After conduction more modelling, it was determined that the average waiting time
 -   say why it is a good investment
 
 -   future steps/other things we can do w/ analysis
+
+
+Through detailed probabilistic modeling of various scenarios, we identified key insights into the operations of Restaurant X. Each scenario provided a valuable perspective on balancing efficiency, customer satisfaction, and profitability.
+
+Scenario 1, with one table and one chef, demonstrated a moderate queue length (peaking at 12) and reasonable waiting times, as seen in the waiting time histogram and queue length histogram. While manageable, the constraints of limited capacity resulted in frequent queues and downtime, indicating the need for expanded operations to improve throughput.
+
+Scenario 2, with five tables and two chefs, showcased significantly improved efficiency, evidenced by low and stable waiting times throughout the day (Waiting Time Over Time plot). The queue length remained minimal, peaking briefly during busy hours but never becoming unmanageable. These results confirm that increasing both tables and staff optimizes customer flow, reduces waiting times, and minimizes customer frustration, especially during peak periods like dinner hours.
+
+Scenario 3 introduced realistic variations in customer arrivals and service times. The arrival time histogram revealed clear peaks during lunch and dinner hours, aligning with typical dining patterns. Service times modeled with a gamma distribution (as opposed to the exponential distribution) reflected more practical scenarios, eliminating unrealistically short service durations. The queue length over time plot highlighted demand surges at peak hours, with the queue peaking at 8 customers—creating a perception of popularity without deterring potential customers. Waiting times remained low on average, reinforcing the efficiency of the system during both peak and off-peak hours.
+
+The results across all scenarios clearly demonstrate that the five-table layout with adjusted staffing during peak times (Scenario 3) strikes the ideal balance between demand, efficiency, and profitability. By ensuring low average waiting times (3.88 minutes) and manageable queues, Restaurant X can deliver a satisfying customer experience while maintaining operational stability. Furthermore, the daily net profit of $4040 underscores the financial viability of this configuration, supporting future investments in growth, improved facilities, and staffing flexibility.
+
+In conclusion, Scenario 3 is the optimal setup for Restaurant X, combining a dynamic model of realistic arrivals and service times with strong operational and financial performance. Future analyses could incorporate dynamic staffing adjustments and external variables, such as seasonality or reservation systems, to further refine operations and enhance profitability. This analysis confirms that Restaurant X is a sound and scalable investment with the potential for sustained success.

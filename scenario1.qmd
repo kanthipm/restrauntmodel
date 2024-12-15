@@ -1,71 +1,176 @@
 ```{r}
-lambda_A <- 5
-lambda_S <- 6
-operating_hours <- 12
-simulation_time <- operating_hours * 60 
+library(ggplot2)
 
-arrival_times <- numeric()
-current_time <- 0
+set.seed(2) 
 
-while (current_time < simulation_time) {
-  inter_arrival_time <- rexp(1, rate = lambda_A / 60) 
-  current_time <- current_time + inter_arrival_time
-  if (current_time < simulation_time) {
-    arrival_times <- c(arrival_times, current_time)
-  }
-}
+operating_hours <- 12  
+lambda_arrival <- 5   
+lambda_service <- 6   
 
-service_times <- rexp(length(arrival_times), rate = lambda_S / 60)
+total_arrivals <- rpois(1, lambda_arrival * operating_hours)
+arrival_times <- cumsum(rexp(total_arrivals, rate = lambda_arrival))
 
-service_end_time <- 0
-waiting_times <- numeric()
-downtime <- numeric()
-downtime_times <- numeric()
-queue_lengths <- numeric()
-queue <- numeric()
+service_times <- rexp(total_arrivals, rate = lambda_service)
 
-for (i in seq_along(arrival_times)) {
-  if (arrival_times[i] < service_end_time) {
-    waiting_time <- service_end_time - arrival_times[i]
-  } else {
-    waiting_time <- 0
-    downtime <- c(downtime, arrival_times[i] - service_end_time)
-    downtime_times <- c(downtime_times, service_end_time)
+wait_times <- numeric(total_arrivals)
+queue_lengths <- numeric(total_arrivals)
+table_free_time <- 0
+current_queue <- 0
+downtime <- 0
+
+for (i in 1:total_arrivals) {
+  if (arrival_times[i] > table_free_time) {
+    downtime <- downtime + (arrival_times[i] - table_free_time)
   }
   
-  waiting_times <- c(waiting_times, waiting_time)
-  queue_lengths <- c(queue_lengths, length(queue))
+  while (current_queue > 0 && table_free_time <= arrival_times[i]) {
+    current_queue <- current_queue - 1
+  }
   
-  service_end_time <- max(service_end_time, arrival_times[i]) + service_times[i]
+  wait_time <- max(0, table_free_time - arrival_times[i])
+  wait_times[i] <- wait_time
+  
+  if (arrival_times[i] < table_free_time) {
+    current_queue <- current_queue + 1
+  }
+  
+  table_free_time <- max(table_free_time, arrival_times[i]) + service_times[i]
+  
+  queue_lengths[i] <- current_queue
 }
 
-arrival_times_hours <- arrival_times / 60
-downtime_times_hours <- downtime_times / 60
-
-mean_waiting_time <- mean(waiting_times)
-mean_downtime <- mean(downtime)
+mean_wait <- mean(wait_times) * 60 
+median_wait <- median(wait_times) * 60 
 mean_queue_length <- mean(queue_lengths)
+downtime_hours <- downtime
 
-summary_metrics <- data.frame(
-  Metric = c("Mean Waiting Time (minutes)", "Mean Downtime (minutes)", "Mean Queue Length"),
-  Value = c(mean(waiting_times), mean(downtime), mean(queue_lengths))
+results <- data.frame(
+  Metric = c("Mean Waiting (min)", "Median Waiting (min)", "Mean Queue Length", "Downtime (hours)"),
+  Value = c(mean_wait, median_wait, mean_queue_length, downtime_hours)
 )
 
-print(summary_metrics)
+print(results)
 
-plot(arrival_times_hours, waiting_times, type = "l", lwd = 2,
-     xlab = "Time (hours)", ylab = "Waiting Time (minutes)",
-     main = "Waiting Time Over Time")
+wait_times_df <- data.frame(wait_times)
+queue_length_df <- data.frame(queue_lengths)
 
-plot(arrival_times_hours, queue_lengths, type = "l", lwd = 2,
-     xlab = "Time (hours)", ylab = "Queue Length",
-     main = "Queue Length Over Time")
+ggplot(wait_times_df, aes(x = wait_times)) +
+  geom_histogram(binwidth = 0.1, fill = "skyblue", color = "black") +
+  labs(title = "Frequency of Customers by Waiting Times",
+       x = "Waiting Time (hours)", y = "Frequency (Number of Customers)") +
+  theme_minimal()
 
-if (length(downtime) > 0) {
-  plot(downtime_times_hours, downtime, type = "h", lwd = 2,
-       xlab = "Time (hours)", ylab = "Downtime (minutes)",
-       main = "Downtime Over Time")
-} 
+ggplot(queue_length_df, aes(x = queue_lengths)) +
+  geom_histogram(binwidth = 1, fill = "lightgreen", color = "black") +
+  labs(title = "Frequency of Customers by Queue Lengths",
+       x = "Queue Length", y = "Frequency (Number of Customers)") +
+  theme_minimal()
+
 
 ```
 
+```{r}
+
+set.seed(1)
+
+lambda_A <- 5           
+L <- 1                 
+lambda_S <- 6        
+num_tables <- 1
+operating_hours <- 12
+total_minutes <- operating_hours * 60
+
+lambda_A_min <- lambda_A / 60
+lambda_S_min <- lambda_S / 60
+
+arrival_times <- numeric()
+t <- 0
+while (t < total_minutes) {
+  t <- t + rexp(1, rate = lambda_A_min)
+  if (t < total_minutes) arrival_times <- c(arrival_times, t)
+}
+
+service_times <- rexp(length(arrival_times), rate = lambda_S_min)
+
+table_free <- rep(0, num_tables)
+
+waiting_times <- numeric(length(arrival_times))
+queue <- numeric()
+
+system_empty_start <- 0
+total_downtime <- 0
+
+queue_lengths <- numeric(length(arrival_times))
+
+for (i in seq_along(arrival_times)) {
+  arrival <- arrival_times[i]
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    total_downtime <- total_downtime + (arrival - system_empty_start)
+  }
+  
+  free_tables <- which(table_free <= arrival)
+  
+  if (length(free_tables) > 0 && length(queue) == 0) {
+    chosen <- free_tables[1]
+    waiting_times[i] <- 0
+    end_time <- arrival + service_times[i]
+    table_free[chosen] <- end_time
+  } else {
+    queue <- c(queue, i)
+  }
+  
+  repeat {
+    free_tables <- which(table_free <= arrival)
+    if (length(free_tables) > 0 && length(queue) > 0) {
+      next_cust <- queue[1]
+      queue <- queue[-1]
+      waiting_times[next_cust] <- arrival - arrival_times[next_cust]
+      end_time <- arrival + service_times[next_cust]
+      table_free[free_tables[1]] <- end_time
+    } else {
+      break
+    }
+  }
+  
+  queue_lengths[i] <- length(queue)
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    system_empty_start <- arrival
+  }
+}
+
+current_time <- max(arrival_times)
+while (length(queue) > 0) {
+  soonest_table <- which.min(table_free)
+  next_free <- table_free[soonest_table]
+  
+  next_cust <- queue[1]
+  queue <- queue[-1]
+  
+  waiting_times[next_cust] <- next_free - arrival_times[next_cust]
+  table_free[soonest_table] <- next_free + service_times[next_cust]
+  current_time <- next_free
+}
+
+final_time <- max(table_free)
+
+mean_wait <- mean(waiting_times)
+median_wait <- median(waiting_times)
+mean_queue_length <- mean(queue_lengths)
+downtime_hours <- (total_downtime / 60)
+
+profit_per_hour <- 500 - 40 * L
+
+results <- data.frame(
+  Metric = c("Mean Waiting (min)", "Median Waiting (min)", "Mean Queue Length", "Downtime (hours)", "Profit/hour"),
+  Value = c(mean_wait, median_wait, mean_queue_length, downtime_hours, profit_per_hour)
+)
+print(results)
+
+plot((arrival_times/60), waiting_times, type = "l",
+     xlab = "Time (hours)", ylab = "Waiting (min)", main = "Waiting Time Over Time")
+plot((arrival_times/60), queue_lengths, type = "l",
+     xlab = "Time (hours)", ylab = "Queue Length", main = "Queue Length Over Time")
+
+```
