@@ -17,6 +17,104 @@ The goal of this analysis is to use probabilistic modelling in order to determin
 
 ## Scenario 1
 
+In the first scenario, the restaurant operates with one dining table and one chef from 10 AM to 10 PM (12 hours). Customer arrivals follow a Poisson process with a rate of 5 customers per hour, and the service times follow an exponential distribution with a rate of 6. If the table was occupied when a customer arrived, they would wait in line until the table became vacant.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+set.seed(2) 
+
+operating_hours <- 12  
+lambda_arrival <- 5   
+lambda_service <- 6   
+
+total_arrivals <- rpois(1, lambda_arrival * operating_hours)
+arrival_times <- cumsum(rexp(total_arrivals, rate = lambda_arrival))
+
+service_times <- rexp(total_arrivals, rate = lambda_service)
+
+wait_times <- numeric(total_arrivals)
+queue_lengths <- numeric(total_arrivals)
+table_free_time <- 0
+current_queue <- 0
+downtime <- 0
+
+for (i in 1:total_arrivals) {
+  if (arrival_times[i] > table_free_time) {
+    downtime <- downtime + (arrival_times[i] - table_free_time)
+  }
+  
+  while (current_queue > 0 && table_free_time <= arrival_times[i]) {
+    current_queue <- current_queue - 1
+  }
+  
+  wait_time <- max(0, table_free_time - arrival_times[i])
+  wait_times[i] <- wait_time
+  
+  if (arrival_times[i] < table_free_time) {
+    current_queue <- current_queue + 1
+  }
+  
+  table_free_time <- max(table_free_time, arrival_times[i]) + service_times[i]
+  
+  queue_lengths[i] <- current_queue
+}
+
+mean_wait <- mean(wait_times) * 60 
+median_wait <- median(wait_times) * 60 
+mean_queue_length <- mean(queue_lengths)
+downtime_hours <- downtime
+
+results <- data.frame(
+  Metric = c("Mean Waiting (min)", "Median Waiting (min)", "Mean Queue Length", "Downtime (hours)"),
+  Value = c(mean_wait, median_wait, mean_queue_length, downtime_hours)
+)
+
+print(results)
+```
+
+The average waiting time of 14.35 minutes and the median waiting time of 12.01 minutes show that customers experience moderate waiting times. This indicates that demand for the restaurant is steady, but wait times are still reasonable. The mean queue length of 3.57 customers suggests that the line grows consistently but does not become unmanageable. The 3.66 hours of downtime provide the chef with sufficient breaks, ensuring they are not overworked and that the restaurant maintains operational efficiency.
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+wait_times_df <- data.frame(wait_times)
+queue_length_df <- data.frame(queue_lengths)
+
+waiting_times_plot <- ggplot(wait_times_df, aes(x = wait_times)) +
+  geom_histogram(binwidth = 0.1, fill = "skyblue", color = "black") +
+  labs(title = "Frequency of Customers by Waiting Times",
+       x = "Waiting Time (hours)", y = "Frequency") +
+  scale_y_continuous(breaks = seq(0, 20, 2)) +
+  theme_minimal(base_size = 12) + 
+  theme(
+    plot.title = element_text(size = rel(0.85), face = "bold", hjust = 0.5), 
+    axis.title = element_text(size = rel(0.8)),              
+    axis.text = element_text(size = rel(0.6))           
+  )
+
+queue_lengths_plot <- ggplot(queue_length_df, aes(x = queue_lengths)) +
+  geom_histogram(binwidth = 1, fill = "lightgreen", color = "black") +
+  labs(title = "Frequency of Customers by Queue Lengths",
+       x = "Queue Length", y = "Frequency") +
+  scale_y_continuous(breaks = seq(0, 15, 2)) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = rel(0.85), face = "bold", hjust = 0.5),  
+    axis.title = element_text(size = rel(0.8)),              
+    axis.text = element_text(size = rel(0.6))                
+  )
+
+grid.arrange(waiting_times_plot, queue_lengths_plot, ncol = 2)
+
+```
+
+The histogram of waiting times reveals that most customers experience minimal to moderate waits, with a significant portion of waiting times falling near 0 hours. This is a positive indicator, as short wait times are more likely to retain customers while also creating the impression of consistent demand. However, a noticeable tail in the distribution shows that a smaller portion of customers experience longer waits, which is expected since there is only one table and one chef.
+
+The histogram of queue lengths shows that queues are frequently short, with most queue lengths ranging between 0 and 5 customers. This aligns with the manageable level of demand observed in this setting. The queue occasionally reaches longer lengths, peaking at 12 customers, but this remains rare. Peaks can contribute to the perception of high demand for the restaurant without overwhelming the single chef.
+
 ## Scenario 2
 
 ## Scenario 3
