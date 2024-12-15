@@ -117,6 +117,9 @@ The histogram of queue lengths shows that queues are frequently short, with most
 
 ## Scenario 2
 
+
+
+
 ## Scenario 3
 
 For the third scenario, we laid out the following situation: the restaurant still operates from 10AM-10PM with 5 tables, but with differing arrival times (modeled by a poisson process) and service times to more realistically model the restaurant experience. From 10AM-12PM, the arrival rate is 4 customers/hour (not prime meal time), from 12-3PM it is 12 customers/hour (more popular lunch time), from 3-5PM it is 5 customers/hour, and from 5-10PM it is 15 customers/hour (busy dinner time). The distribution of the arrival times is shown below. We can see that more people are arriving during lunch and especially the busier dinner hours in which the arrival rate increases:
