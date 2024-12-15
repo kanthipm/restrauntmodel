@@ -117,7 +117,106 @@ The histogram of queue lengths shows that queues are frequently short, with most
 
 ## Scenario 2
 
+Scenario 2 For the second scenario, we examine the performance metrics of a restaurant with 5 dining tables and L chefs, operating daily from 10:00 AM to 10:00 PM. Customers arrive according to a Poisson process with an average arrival rate of 10 customers per hour. Once a customer is seated, their total service time (including ordering, cooking, and eating) follows an exponential distribution with a rate of 3, where L represents the number of chefs employed. Each customer spends 50 per meal, and each chef earns 40 per hour. The plot below shows how the waiting time varies throughout the 12 hour period. The X-axis represents time in hours, while the y-axis shows waiting time in minutes. 
 
+```{r}
+
+set.seed(123)
+
+lambda_A <- 10           
+L <- 2                    
+lambda_S <- 3 * L        
+num_tables <- 5
+operating_hours <- 12
+total_minutes <- operating_hours * 60
+
+lambda_A_min <- lambda_A / 60
+lambda_S_min <- lambda_S / 60
+
+arrival_times <- numeric()
+t <- 0
+while (t < total_minutes) {
+  t <- t + rexp(1, rate = lambda_A_min)
+  if (t < total_minutes) arrival_times <- c(arrival_times, t)
+}
+
+service_times <- rexp(length(arrival_times), rate = lambda_S_min)
+
+table_free <- rep(0, num_tables)
+
+waiting_times <- numeric(length(arrival_times))
+queue <- numeric()
+
+system_empty_start <- 0
+total_downtime <- 0
+
+queue_lengths <- numeric(length(arrival_times))
+
+for (i in seq_along(arrival_times)) {
+  arrival <- arrival_times[i]
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    total_downtime <- total_downtime + (arrival - system_empty_start)
+  }
+  
+  free_tables <- which(table_free <= arrival)
+  
+  if (length(free_tables) > 0 && length(queue) == 0) {
+    chosen <- free_tables[1]
+    waiting_times[i] <- 0
+    end_time <- arrival + service_times[i]
+    table_free[chosen] <- end_time
+  } else {
+    queue <- c(queue, i)
+  }
+  
+  repeat {
+    free_tables <- which(table_free <= arrival)
+    if (length(free_tables) > 0 && length(queue) > 0) {
+      next_cust <- queue[1]
+      queue <- queue[-1]
+      waiting_times[next_cust] <- arrival - arrival_times[next_cust]
+      end_time <- arrival + service_times[next_cust]
+      table_free[free_tables[1]] <- end_time
+    } else {
+      break
+    }
+  }
+  
+  queue_lengths[i] <- length(queue)
+  
+  if (sum(table_free > arrival) + length(queue) == 0) {
+    system_empty_start <- arrival
+  }
+}
+
+current_time <- max(arrival_times)
+while (length(queue) > 0) {
+  soonest_table <- which.min(table_free)
+  next_free <- table_free[soonest_table]
+  
+  next_cust <- queue[1]
+  queue <- queue[-1]
+  
+  waiting_times[next_cust] <- next_free - arrival_times[next_cust]
+  table_free[soonest_table] <- next_free + service_times[next_cust]
+  current_time <- next_free
+}
+
+waiting_plot <- plot((arrival_times/60), waiting_times, type = "l",
+     xlab = "Time (hours)", ylab = "Waiting (min)", main = "Waiting Time Over Time")
+
+```
+
+The waiting time remains relatively stable and low throughout most of the day. The peak waiting times occur during the busiest times of the day when customer arrivals are at their highest, such as around 7 to 8 hours into the 12 hour period (5:00 PM to 6:00 PM) and 11 hours into the 12 hour period (9:00 PM). This plot confirms that for most of the day, customers are experiencing little to no wait, on average and the restaurant is able to handle customer arrivals efficiently. However, surges in waiting times suggest that staffing adjustments during peak hours could further optimize customer flow and reduce these spikes. 
+
+```{r}
+
+arrival_plot <- plot((arrival_times/60), queue_lengths, type = "l",
+     xlab = "Time (hours)", ylab = "Queue Length", main = "Queue Length Over Time")
+```
+
+This plot shows the number of customers waiting in line over the course of the operating day. The x-axis represents time in hours, and the y-axis shows the number of customers in the queue. The queue length tends to remain very low, with only increases at times when customer arrivals are higher. At certain points, the queue grows slightly but does not exceed more than 8 minutes, indicating that customers are being seated fairly quickly. This indicates that the restaurant is operating efficiently, with sufficient capacity to serve customers quickly. The low queue length during off-peak hours also indicates that there are periods of underutilization, which might lead to potential staffing adjustments.
 
 
 ## Scenario 3
